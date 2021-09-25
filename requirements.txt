@@ -1,0 +1,4 @@
+qrcode[pil]
+flask
+flask-accept
+qrcode
