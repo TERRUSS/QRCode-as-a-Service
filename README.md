@@ -1,8 +1,11 @@
 # qrcode as a service
 
-## Installation
+## Quick start
 ```sh
+python3 -m venv env
 source env/bin/activate
+
+flask run
 ```
 
 ### Run tests
