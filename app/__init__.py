@@ -1,4 +1,6 @@
-from flask import Flask, request
+#!/usr/bin/env python3
+
+from flask import Flask, request, render_template
 from flask_accept import accept, accept_fallback
 
 from enum import Enum
@@ -27,7 +29,6 @@ class qrc:
         return f.read()
 
     def gen_img(self, drawer=None):
-        print(self.img.__members__)
         if drawer:
             img = self.qr.make_image(image_factory=StyledPilImage, module_drawer=drawer.value())
         else:
@@ -40,18 +41,20 @@ class qrc:
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='../front/dist')
 
     @app.route('/<path:inp>', methods=['GET', 'POST'])
     @accept_fallback
     def home(inp):
         qr = qrc(inp)
-        return f'Here is your qrcode for {inp} : {qr.print_ascii()}'
+        return f'Here is your qrcode for `{inp}` : { qr.print_ascii() }'
     
     @home.support('text/html')
     def home_html(inp):
         qr = qrc(inp)
-        return f'<h1>qrcode as a service</h1>Here is your qrcode for {inp} : <pre>{qr.print_ascii()}</pre><img src={qr.gen_img(qr.img.vertical_bars)} />'
+
+        return app.send_static_file('index.html')
+        # return f'<h1>qrcode as a service</h1>Here is your qrcode for {inp} : <pre>{qr.print_ascii()}</pre><img src={qr.gen_img(qr.img.vertical_bars)} />'
 
 
     @home.support('image/png')
@@ -59,8 +62,7 @@ def create_app():
         qr = qrc(inp)
 
         if request.method == 'POST':
-            print(request)
-            return qr.gen_img( qr.img[request.json['drawer']] if request.json['drawer'] in qr.img.__members__ else False )
+            return qr.gen_img( qr.img[request.json['drawer']] if 'drawer' in request.json.keys() and request.json['drawer'] in qr.img.__members__ else False )
 
         return qr.gen_img(qr.img.classic)
     return app
