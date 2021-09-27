@@ -1,12 +1,12 @@
 
 <template>
   <div>
-    <header class="bg-white shadow">
+    <header class="bg-white">
       <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
         <h1
           class="text-3xl font-bold leading-tight text-gray-900"
         >
-          qrcode as a service
+          <span class="mr-4">🔳</span> qrcode as a service
         </h1>
       </div>
     </header>

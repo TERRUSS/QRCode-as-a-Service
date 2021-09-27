@@ -1,61 +1,37 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request, render_template
+from flask import Flask, request, send_from_directory
 from flask_accept import accept, accept_fallback
 
-from enum import Enum
-import qrcode, io, base64
-from qrcode.image.styledpil import StyledPilImage
-from qrcode.image.styles.moduledrawers import SquareModuleDrawer, VerticalBarsDrawer, HorizontalBarsDrawer, RoundedModuleDrawer, CircleModuleDrawer
+from .qrc import qrc
 
-class qrc:
-    qr = qrcode.QRCode()
-    class img(Enum):
-        classic = SquareModuleDrawer
-        vertical_bars = VerticalBarsDrawer
-        horisontal_bars = HorizontalBarsDrawer
-        rounded = RoundedModuleDrawer
-        dots = CircleModuleDrawer
-
-
-    def __init__(self, inp):
-        self.qr.clear()
-        self.qr.add_data(inp)
-
-    def print_ascii(self):
-        f = io.StringIO()
-        self.qr.print_ascii(out=f)
-        f.seek(0)
-        return f.read()
-
-    def gen_img(self, drawer=None):
-        if drawer:
-            img = self.qr.make_image(image_factory=StyledPilImage, module_drawer=drawer.value())
-        else:
-            img = self.qr.make_image()
-
-        buff = io.BytesIO()
-        img.save(buff, format='png')
-        return "data:image/jpeg;base64," + base64.b64encode(buff.getvalue()).decode('utf-8')
-
-
+import os
+root = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "front", "dist")
+print(root)
 
 def create_app():
-    app = Flask(__name__, static_folder='../front/dist')
+    app = Flask(__name__)
 
     @app.route('/<path:inp>', methods=['GET', 'POST'])
     @accept_fallback
     def home(inp):
+        print(inp, request.headers)
+        if inp == "assets/vendor.js":
+            return send_from_directory(root, 'assets/vendor.js', mimetype='text/javascript')
         qr = qrc(inp)
         return f'Here is your qrcode for `{inp}` : { qr.print_ascii() }'
     
     @home.support('text/html')
     def home_html(inp):
-        qr = qrc(inp)
+        print("AAAA", inp)
+        if inp == "assets/vendor.js":
+            return send_from_directory(root, 'assets/vendor.js', mimetype='text/javascript')
+        return send_from_directory(root, 'index.html')
 
-        return app.send_static_file('index.html')
-        # return f'<h1>qrcode as a service</h1>Here is your qrcode for {inp} : <pre>{qr.print_ascii()}</pre><img src={qr.gen_img(qr.img.vertical_bars)} />'
 
+    # @home.support('text/css')
+    # def home_html(path):
+    #     return send_from_directory(root, path)
 
     @home.support('image/png')
     def home_img(inp):
@@ -65,4 +41,9 @@ def create_app():
             return qr.gen_img( qr.img[request.json['drawer']] if 'drawer' in request.json.keys() and request.json['drawer'] in qr.img.__members__ else False )
 
         return qr.gen_img(qr.img.classic)
+
+    @app.route('*')
+    def a():
+        return redirect('awesome%20qrcode')
+
     return app
