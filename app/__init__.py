@@ -16,17 +16,17 @@ def create_app():
     @accept_fallback
     def home(inp):
         print(inp, request.headers)
-        if inp == "assets/vendor.js":
+        if inp == "/vendor.js":
             return send_from_directory(root, 'assets/vendor.js', mimetype='text/javascript')
         qr = qrc(inp)
         return f'Here is your qrcode for `{inp}` : { qr.print_ascii() }'
     
-    @home.support('text/html')
-    def home_html(inp):
-        print("AAAA", inp)
-        if inp == "assets/vendor.js":
-            return send_from_directory(root, 'assets/vendor.js', mimetype='text/javascript')
-        return send_from_directory(root, 'index.html')
+    # @home.support('text/html')
+    # def home_html(inp):
+    #     print("AAAA", inp)
+    #     if inp == "assets/vendor.js":
+    #         return send_from_directory(root, 'assets/vendor.js', mimetype='text/javascript')
+    #     return send_from_directory(root, 'index.html')
 
 
     # @home.support('text/css')
@@ -42,7 +42,7 @@ def create_app():
 
         return qr.gen_img(qr.img.classic)
 
-    @app.route('*')
+    @app.route('/*')
     def a():
         return redirect('awesome%20qrcode')
 
