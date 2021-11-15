@@ -1,3 +1,5 @@
+#!/bin/sh
+
 echo "vendor.xxxxx.js -> vendor.js"
 mv dist/assets/vendor* dist/assets/vendor.js
 echo "updating linking..."

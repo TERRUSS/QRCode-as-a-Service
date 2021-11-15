@@ -18,7 +18,8 @@
       />
       <div class="flex mt-8 lg:flex-shrink-0">
         <div class="flex flex-col w-full">
-          <input type="text" class="block rounded-xl border-0 mx-auto" v-model="content">
+          <input type="text" placeholder="Your text here" class="block rounded-xl border-0 mx-auto" v-model="content">
+          <h2 class="text-2xl mt-8">Pimp that square up :</h2>
           <form class="mt-5 flex flex-wrap text-2xl justify-center max-w-screen-sm mx-auto">
             <div class="mx-auto leading-loose mx-5" v-for="m in drawingMethods">
               <label :for="m" class="bg-gray-300 rounded-lg p-1 capitalize" :class="(drawer == m) ? 'font-bold text-3xl' : 'font-normal'">{{ m.replace('_', ' ') }}</label>
@@ -61,7 +62,7 @@
     },
     methods: {
       updateimg: function () {
-        fetch(`/${this.$data.content}`, 
+        fetch(`https://qrc.benaben.space/${this.$data.content}`, 
           {
             method: 'POST',
             body: JSON.stringify({

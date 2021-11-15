@@ -34,7 +34,7 @@
         commands: [
           {
             comment: 'Generate easily QrCodes from your terminal',
-            command: 'curl qrcode.benaben.space/\\<YOUR%20INPUT\\> # dont forget to escape spaces',
+            command: 'curl qrc.benaben.space/\\<YOUR%20INPUT\\> # dont forget to escape spaces',
             result: `Here is your qrcode for \`<YOUR INPUT>\` :
 
     █▀▀▀▀▀█  ▄ ▄█ ▀ ▄ █▀▀▀▀▀█
