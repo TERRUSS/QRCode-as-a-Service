@@ -1,3 +1,0 @@
-AddType text/CSS .css 
-AddHandler text/css .css 
-
